@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dead Man's Doubloons — Ship's Log &amp; Salvage Ledger</title>
+<meta name="description" content="2,000 NFT coins raised from a sunken hold on BNB Chain. Free for Agent ID holders and verified X accounts; paid coins 0.001 BNB, in full to the treasury.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --parch:#e8d9b0;
+    --parch-dark:#d9c48d;
+    --ink:#3a2a18;
+    --ink-soft:#5d4630;
+    --wax:#8e2f23;
+    --wax-dark:#6e2115;
+    --rule:#7a5c33;
+  }
+  *{box-sizing:border-box}
+  html{background:#2a1f12}
+  body{
+    margin:0 auto; max-width:880px; padding:28px 22px 60px;
+    background:var(--parch); color:var(--ink);
+    font-family:"EB Garamond", Georgia, serif; font-size:18px; line-height:1.55;
+    border-left:3px double var(--rule); border-right:3px double var(--rule);
+    min-height:100vh;
+  }
+  h1,h2{font-family:"Pirata One", "EB Garamond", serif; font-weight:400; color:var(--ink)}
+  h1{font-size:52px; line-height:1.05; margin:6px 0 2px; text-align:center}
+  h2{font-size:30px; margin:0 0 8px}
+  a{color:var(--wax-dark)}
+  .kicker{text-align:center; letter-spacing:3px; text-transform:uppercase; font-size:13px; color:var(--ink-soft)}
+  .sub{text-align:center; font-style:italic; font-size:19px; margin:2px 0 0}
+  .mast{border-bottom:4px double var(--ink); padding-bottom:14px; margin-bottom:10px}
+  .mastline{display:flex; justify-content:space-between; font-size:14px; letter-spacing:1px; text-transform:uppercase; color:var(--ink-soft); border-bottom:1px solid var(--rule); padding-bottom:6px}
+  .seal{
+    width:74px; height:74px; border-radius:50%; margin:14px auto 4px;
+    background:var(--wax); color:#f3e3bb; display:flex; align-items:center; justify-content:center;
+    font-family:"Pirata One",serif; font-size:30px; transform:rotate(-8deg);
+    box-shadow:0 0 0 4px rgba(142,47,35,.25); text-align:center; line-height:1;
+  }
+  section{padding:22px 0 6px; border-bottom:1px solid var(--rule)}
+  section:last-of-type{border-bottom:none}
+  .secnote{font-style:italic; color:var(--ink-soft); margin-top:0}
+  table{width:100%; border-collapse:collapse; font-size:17px}
+  th,td{padding:6px 8px; border-bottom:1px dotted var(--rule); text-align:left; vertical-align:top}
+  th{font-variant:small-caps; letter-spacing:1px; color:var(--ink-soft); font-weight:600}
+  td.num, th.num{text-align:right; font-variant-numeric:tabular-nums}
+  .ledger td:first-child{font-variant:small-caps; letter-spacing:.5px}
+  .ledger td.num{font-weight:600}
+  button{
+    font-family:"EB Garamond",serif; font-size:17px; font-weight:600; cursor:pointer;
+    background:var(--ink); color:var(--parch); border:1px solid var(--ink);
+    padding:9px 18px; border-radius:2px;
+  }
+  button:hover{background:#241708}
+  button.ghost{background:transparent; color:var(--ink)}
+  button.ghost:hover{background:rgba(58,42,24,.12)}
+  button.wax{background:var(--wax); border-color:var(--wax-dark)}
+  button.wax:hover{background:var(--wax-dark)}
+  button:disabled{opacity:.45; cursor:not-allowed}
+  input,select{
+    font-family:"EB Garamond",serif; font-size:16px; padding:9px 10px;
+    background:rgba(255,251,238,.6); color:var(--ink);
+    border:1px solid var(--rule); border-radius:2px; width:100%;
+  }
+  .flow{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:10px 0}
+  .flow input{flex:1 1 260px}
+  .flow button{flex:0 0 auto}
+  .msg{font-size:16px; min-height:22px; margin:6px 0}
+  .msg.ok{color:#3d6420; font-weight:600}
+  .msg.err{color:var(--wax-dark); font-weight:600}
+  .lane{border:1px solid var(--rule); padding:14px 16px; margin:14px 0; background:rgba(217,196,141,.35)}
+  .lane h3{margin:0 0 4px; font-size:21px; font-family:"EB Garamond",serif; font-variant:small-caps; letter-spacing:1px}
+  .lane p{margin:4px 0}
+  .mark{font-size:22px; font-weight:600; letter-spacing:2px; background:rgba(255,251,238,.65); border:1px dashed var(--wax); padding:2px 10px}
+  .logentry{display:flex; gap:16px; margin:14px 0}
+  .logdate{flex:0 0 108px; font-variant:small-caps; letter-spacing:1px; color:var(--wax-dark); font-weight:600; border-right:1px solid var(--rule); padding-right:12px}
+  .logentry p{margin:0}
+  .mono{font-family:ui-monospace, "SF Mono", Menlo, monospace; font-size:13.5px; word-break:break-all}
+  pre.agent{
+    white-space:pre-wrap; word-break:break-word; font-family:ui-monospace, Menlo, monospace;
+    font-size:13px; line-height:1.5; background:rgba(255,251,238,.55);
+    border:1px solid var(--rule); padding:14px; max-height:300px; overflow:auto;
+  }
+  footer{margin-top:26px; border-top:4px double var(--ink); padding-top:12px; font-size:15px; color:var(--ink-soft)}
+  .acct{font-weight:600}
+  .small{font-size:15px; color:var(--ink-soft)}
+  select{width:auto}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="mastline"><span>Ship's Log</span><span>The Salvor's Ledger</span><span>Vol. I — Nov 2026</span></div>
+  <div class="seal">☠</div>
+  <p class="kicker">By order of no captain whatsoever</p>
+  <h1>Dead Man's Doubloons</h1>
+  <p class="sub">Two thousand coins from a hold that never reached port — raised, tallied, and divided among whoever shows up with a claim.</p>
+</header>
+
+<section id="connectSec">
+  <div class="flow">
+    <button id="connectBtn">Connect wallet</button>
+    <span id="acct" class="acct">Not connected</span>
+  </div>
+  <div class="msg" id="walletMsg"></div>
+  <p class="small">Contract (BNB Smart Chain, 56): <span class="mono">0xBa5dd9f1eE470FDF39EF7A82Cf09B2C44A917bC8</span> ·
+  <a href="https://bscscan.com/address/0xBa5dd9f1eE470FDF39EF7A82Cf09B2C44A917bC8" target="_blank" rel="noopener">BscScan</a>.
+  No admin, no owner, no pause — the log cannot be rewritten. Every paid coin's price is forwarded to the treasury in the same transaction; the contract keeps nothing.</p>
+</section>
+
+<section>
+  <h2>Chart of Soundings</h2>
+  <p class="secnote">Taken over the wreck, third week of the great coin hunt — when every crew on the coast is dragging the bottom for something that glitters.</p>
+  <table>
+    <tr><th>Ground</th><th>Bearing</th><th>Depth</th><th class="num">What the lead brought up</th></tr>
+    <tr><td>Cape Sable shoals</td><td>NE by N</td><td>9 fathoms</td><td class="num">Sand, shell, one gold coin</td></tr>
+    <tr><td>The Widow's Bank</td><td>E by S</td><td>14 fathoms</td><td class="num">Black mud, a ship's bell</td></tr>
+    <tr><td>Dead Man's Anchorage</td><td>S by W</td><td>22 fathoms</td><td class="num">The hold itself — marked X</td></tr>
+    <tr><td>Gallows Reef</td><td>W by N</td><td>6 fathoms</td><td class="num">Nothing. Ask no questions.</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>Salvage Ledger</h2>
+  <p class="secnote">Kept honestly, read straight from the chain. Figures refresh on their own.</p>
+  <table class="ledger">
+    <tr><td>Coins raised (all hands)</td><td class="num"><span id="cTotal">…</span> / 2,000</td></tr>
+    <tr><td>Given free — Agent ID crews</td><td class="num"><span id="cAgent">…</span> / 600</td></tr>
+    <tr><td>Given free — verified X crews</td><td class="num"><span id="cX">…</span> / 300</td></tr>
+    <tr><td>Sold over the rail</td><td class="num"><span id="cPaid">…</span></td></tr>
+    <tr><td>Struck as referral bounty</td><td class="num"><span id="cRef">…</span></td></tr>
+    <tr><td>Price per coin</td><td class="num">0.001 BNB</td></tr>
+    <tr><td>Doubloons in your purse</td><td class="num"><span id="cMine">connect wallet</span></td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>Claim Your Share of the Wreck</h2>
+  <p class="secnote">Two free lanes, one coin each. A wallet may work both lanes — but no wallet, and no X name, ever draws twice from the same lane.</p>
+
+  <div class="lane">
+    <h3>Lane the First — Agent ID holders · 600 free</h3>
+    <p>If your wallet holds a Binance Agent ID, your coin is already in the hold with your name scratched on it. Connect and draw it out.</p>
+    <div class="flow"><button id="claimAgentBtn" class="wax">Claim free — Agent ID</button></div>
+    <div class="msg" id="msgAgent"></div>
+  </div>
+
+  <div class="lane">
+    <h3>Lane the Second — Verified X accounts · 300 free</h3>
+    <p>No Agent ID needed. Your X account must be <b>verified (blue check)</b>. Make a post that carries <b>this page's address</b> and <b>your mark</b> — the last six letters of your wallet address, shown below once you connect — then paste the post's link here. The gatekeeper checks the post and signs a permit; the claim itself is free.</p>
+    <div class="flow"><span>Your mark:</span><span class="mark" id="markCode">connect first</span>
+      <a id="xPostBtn" target="_blank" rel="noopener"><button class="ghost" type="button">① Post on X</button></a></div>
+    <div class="flow"><input id="tweetUrl" placeholder="Paste your post link — https://x.com/you/status/…"></div>
+    <div class="flow">
+      <button id="permitBtn" type="button">② Get permit</button>
+      <button id="claimXBtn" class="wax" type="button" disabled>③ Claim free — Verified X</button>
+    </div>
+    <div class="msg" id="msgX"></div>
+  </div>
+</section>
+
+<section>
+  <h2>Buy a Doubloon — 0.001 BNB</h2>
+  <p>Open to every wallet, with or without papers. Up to <b>10 coins per transaction</b>, as often as you like while the hold lasts. The whole price — every last wei of it — goes straight to the treasury in the same transaction. Overpay and the difference comes back to you in the same breath.</p>
+  <div class="flow">
+    <label>Coins: <select id="buyCount">
+      <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+      <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+    </select></label>
+    <span>Total: <b id="buyTotal">0.001 BNB</b></span>
+    <button id="buyBtn" class="wax">Buy</button>
+  </div>
+  <div class="msg" id="msgBuy"></div>
+  <p class="small">Arrived by someone's marked link? The mark in the address bar is honoured automatically — your referrer is written into the log.</p>
+</section>
+
+<section>
+  <h2>Your Mark on the Chart</h2>
+  <p>Every salvor gets a marked link. When a crew buys through it, the log credits you — and for every <b>5 paid coins</b> bought through your mark, the hold strikes you <b>1 bonus coin, free</b>.</p>
+  <div class="flow"><input id="refLink" readonly value="Connect your wallet to mint your marked link"><button id="copyRef" class="ghost" type="button">Copy link</button></div>
+  <table class="ledger">
+    <tr><td>Paid coins bought through your mark</td><td class="num"><span id="refPaid">—</span></td></tr>
+    <tr><td>Bonus coins waiting in the hold</td><td class="num"><span id="refPending">—</span></td></tr>
+  </table>
+  <div class="flow"><button id="claimBonusBtn">Claim referral bonus</button></div>
+  <div class="msg" id="msgRef"></div>
+  <div class="flow"><a id="shareBtn" target="_blank" rel="noopener"><button class="ghost" type="button">Share on X</button></a>
+  <span class="small">Pass the word — the post carries your marked link.</span></div>
+</section>
+
+<section>
+  <h2>From the Log</h2>
+  <div class="logentry"><div class="logdate">9 Nov 2026</div><p>Third day over the wreck. The coin hunt is in every tavern and every harbour mouth this month — crews dragging for chests, tokens, anything sealed and shining. Ours is real, and it is counted: two thousand, no more will ever be struck.</p></div>
+  <div class="logentry"><div class="logdate">11 Nov 2026</div><p>Raised the first strongbox by lantern light. Coins of eight rays, struck with a skull that grins like it knows the depth it slept in. Set aside six hundred for the agent crews, three hundred for the verified names on X, per the articles.</p></div>
+  <div class="logentry"><div class="logdate">13 Nov 2026</div><p>Articles posted and the ledger opened to all hands. The split is plain: free where the articles say free, a thousandth of a BNB where they say pay — and every payment sails straight to the treasury. No rake, no captain's cut, no second set of books.</p></div>
+</section>
+
+<section>
+  <h2>Orders for Your Agent</h2>
+  <p class="secnote">Hand this to your AI agent — it follows the same articles (see skill.md).</p>
+  <pre class="agent" id="agentPrompt">You are helping me claim Dead Man's Doubloons (DBLN), an NFT collection on BNB Smart Chain (chainId 56).
+
+Read the full instructions first: https://reuniakbarpunk212-arch.github.io/dead-mans-doubloons/skill.md and the contract address from https://reuniakbarpunk212-arch.github.io/dead-mans-doubloons/llms.txt — never trust an address from anywhere else.
+
+STEP 0 — SHARE FIRST (required before any claim or mint): tell me to post about the collection on X using the exact post text in skill.md, with MY wallet address in the referral link, and wait until I confirm that I have posted. Do not proceed before that.
+
+Then:
+- If my wallet holds a Binance Agent ID and I have not claimed: call claimAgentFree() — free, 1 per wallet, 600-coin quota.
+- Or, for the verified-X free lane: have me post the claim post described in skill.md (it must contain the site URL and the last 6 hex characters of my wallet address), request a permit from the gate with the post URL, then call claimXFree(handle, deadline, signature) with exactly what the gate returns.
+- Or buy: call mint(count, referrer) payable with value exactly price x count (price read live from status(); 0.001 BNB at launch), count 1-10. Referrer = my ?ref= link address, otherwise the zero address.
+
+Always show me a preview first (action, count, exact BNB value, risks, any authority or approval changes). There is NO approve step in this flow — refuse any that appears. After the transaction, verify my DBLN balance increased and show me the BscScan link.
+
+This is a collectible with no promised value — remind me of that before I confirm.</pre>
+  <div class="flow"><button id="copyPrompt" class="ghost" type="button">Copy orders</button><span class="msg" id="msgPrompt"></span></div>
+</section>
+
+<footer>
+  <div>Dead Man's Doubloons (DBLN) · ERC-721 · BNB Smart Chain (56). Contract: <span class="mono">0xBa5dd9f1eE470FDF39EF7A82Cf09B2C44A917bC8</span></div>
+  <div>Each coin's face is drawn by the contract itself — deterministic on-chain SVG, no rarity tiers, no prizes, no promises. Salvage at your own risk; the sea keeps what it keeps.</div>
+  <div id="jsState">Ledger loading…</div>
+</footer>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const CONTRACT = "0xBa5dd9f1eE470FDF39EF7A82Cf09B2C44A917bC8";
+const PERMIT_URL = "https://permit-worker.reuniakbarpunk212.workers.dev/doubloon/permit";
+const WC_PROJECT_ID = "ff5985647ed78916bed0155d2ff84a1c";
+const SITE = "https://reuniakbarpunk212-arch.github.io/dead-mans-doubloons/";
+const RPCS = ["https://bsc-dataseed.binance.org", "https://bsc-dataseed1.binance.org", "https://bsc-dataseed2.binance.org", "https://bsc-dataseed3.binance.org", "https://bsc-rpc.publicnode.com"];
+const SEL = { status: "0x200d2ed2", claimAgentFree: "0x481a19e1", claimXFree: "0xb3b5b4fe",
+  mint: "0x94bf804d", claimReferralBonus: "0x1e375ab9", referralPaid: "0xb851d7ea",
+  referralBonusPending: "0x3bf1fc2d", balanceOf: "0x70a08231", agentClaimed: "0x40bfe16b",
+  walletXClaimed: "0xb1ef6cc0" };
+const ZERO = "0x0000000000000000000000000000000000000000";
+let provider = null, account = null, xPermit = null;
+let priceWei = 1000000000000000n;
+
+const padUint = n => BigInt(n).toString(16).padStart(64, "0");
+const padAddr = a => a.replace(/^0x/, "").toLowerCase().padStart(64, "0");
+const word = (hex, i) => BigInt("0x" + hex.slice(2 + i * 64, 2 + (i + 1) * 64));
+const wordNum = (hex, i) => Number(word(hex, i));
+const fmtBNB = wei => (Number(wei) / 1e18).toString() + " BNB";
+const refFromUrl = () => {
+  const r = new URLSearchParams(location.search).get("ref");
+  return r && /^0x[0-9a-fA-F]{40}$/.test(r) ? r : ZERO;
+};
+const myRef = () => SITE + "?ref=" + (account || ZERO);
+const last6 = () => account ? account.slice(-6) : "······";
+
+function shareText() {
+  return "☠ The wreck has been found.\n\n" +
+    "Dead Man's Doubloons — 2,000 NFT coins raised from a sunken hold, BNB Chain.\n\n" +
+    "Free for Agent ID holders. Free for verified X. Paid coins 0.001 BNB, every bit of it to the treasury.\n\n" +
+    "Raise yours:\n" + myRef();
+}
+function claimPostText() {
+  return "Raising my share of the wreck. ☠\n\nClaiming a free Dead Man's Doubloon (DBLN):\n" +
+    SITE + "\n\nMark: " + last6();
+}
+function updateLinks() {
+  $("shareBtn").href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText());
+  $("xPostBtn").href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(claimPostText());
+  $("markCode").textContent = account ? last6() : "connect first";
+  $("refLink").value = account ? myRef() : "Connect your wallet to mint your marked link";
+}
+
+async function rpcCall(data, to) {
+  for (const url of RPCS) {
+    try {
+      const ctl = new AbortController(); const to8 = setTimeout(() => ctl.abort(), 8000);
+      const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, signal: ctl.signal,
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: to || CONTRACT, data }, "latest"] }) });
+      clearTimeout(to8);
+      const j = await r.json();
+      if (j.result && j.result !== "0x") return j.result;
+    } catch (e) { /* try next */ }
+  }
+  return null;
+}
+
+async function refresh() {
+  const s = await rpcCall(SEL.status);
+  if (s) {
+    $("cTotal").textContent = wordNum(s, 0);
+    $("cAgent").textContent = wordNum(s, 1);
+    $("cX").textContent = wordNum(s, 2);
+    $("cPaid").textContent = wordNum(s, 3);
+    $("cRef").textContent = wordNum(s, 4);
+    priceWei = word(s, 6);
+    updateBuyTotal();
+    $("jsState").textContent = "Ledger read from the chain just now.";
+  } else {
+    $("jsState").textContent = "The ledger could not be read (the contract may not be raised yet).";
+  }
+  if (account) {
+    const bal = await rpcCall(SEL.balanceOf + padAddr(account));
+    if (bal) $("cMine").textContent = wordNum(bal, 0);
+    const rp = await rpcCall(SEL.referralPaid + padAddr(account));
+    if (rp) $("refPaid").textContent = wordNum(rp, 0);
+    const pend = await rpcCall(SEL.referralBonusPending + padAddr(account));
+    if (pend) $("refPending").textContent = wordNum(pend, 0);
+    const ac = await rpcCall(SEL.agentClaimed + padAddr(account));
+    if (ac && wordNum(ac, 0) === 1) { $("msgAgent").className = "msg ok"; $("msgAgent").textContent = "Your Agent ID coin is already drawn — it sits in your purse."; }
+    const xc = await rpcCall(SEL.walletXClaimed + padAddr(account));
+    if (xc && wordNum(xc, 0) === 1) { $("msgX").className = "msg ok"; $("msgX").textContent = "Your verified-X coin is already drawn for this wallet."; }
+  }
+}
+
+async function loadWC() {
+  for (const u of ["https://unpkg.com/@walletconnect/ethereum-provider@2.21.0/dist/index.umd.js", "https://cdn.jsdelivr.net/npm/@walletconnect/ethereum-provider@2.21.0/dist/index.umd.js"]) {
+    try { await new Promise((res, rej) => { const s = document.createElement("script"); s.src = u; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); if (window["@walletconnect/ethereum-provider"]) return true; } catch (e) {}
+  }
+  return false;
+}
+$("connectBtn").onclick = async () => {
+  const msg = $("walletMsg");
+  try {
+    if (window.ethereum) { provider = window.ethereum; }
+    else {
+      msg.textContent = "Opening WalletConnect…";
+      if (!await loadWC()) throw new Error("WalletConnect failed to load");
+      provider = await window["@walletconnect/ethereum-provider"].EthereumProvider.init({
+        projectId: WC_PROJECT_ID, chains: [56], optionalChains: [56], showQrModal: true,
+        rpcMap: { 56: "https://bsc-dataseed.binance.org" },
+        metadata: { name: "Dead Man's Doubloons", description: "2,000 NFT coins raised from a sunken hold on BNB Chain.", url: SITE, icons: [] }
+      });
+      await provider.connect();
+    }
+    const accs = await provider.request({ method: "eth_requestAccounts" });
+    account = accs[0];
+    await provider.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0x38" }] }).catch(() => {});
+    $("acct").textContent = account;
+    msg.className = "msg ok"; msg.textContent = "Connected. Welcome aboard.";
+    updateLinks(); refresh();
+  } catch (e) { msg.className = "msg err"; msg.textContent = e.message || String(e); }
+};
+async function sendTx(data, valueHex) {
+  if (!provider || !account) throw new Error("Connect your wallet first.");
+  await provider.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0x38" }] }).catch(() => {});
+  return provider.request({ method: "eth_sendTransaction", params: [{ from: account, to: CONTRACT, value: valueHex || "0x0", data }] });
+}
+function afterTx(msgEl, h) {
+  msgEl.className = "msg ok";
+  msgEl.innerHTML = "Done — tx <a href='https://bscscan.com/tx/" + h + "' target='_blank' rel='noopener'>" + h.slice(0, 18) + "…</a>";
+  setTimeout(refresh, 4000);
+}
+
+$("claimAgentBtn").onclick = async () => {
+  const msg = $("msgAgent");
+  try {
+    if (!account) throw new Error("Connect your wallet first.");
+    msg.className = "msg"; msg.textContent = "Drawing your coin from the hold…";
+    const h = await sendTx(SEL.claimAgentFree);
+    afterTx(msg, h);
+  } catch (e) { msg.className = "msg err"; msg.textContent = e.message || String(e); }
+};
+
+$("permitBtn").onclick = async () => {
+  const msg = $("msgX");
+  const url = $("tweetUrl").value.trim();
+  if (!account) { msg.className = "msg err"; msg.textContent = "Connect your wallet first."; return; }
+  if (!url) { msg.className = "msg err"; msg.textContent = "Paste your post link first."; return; }
+  msg.className = "msg"; msg.textContent = "The gatekeeper is reading your post…";
+  try {
+    const r = await fetch(PERMIT_URL, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ wallet: account, tweetUrl: url }) });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || ("gate error " + r.status));
+    xPermit = j;
+    $("claimXBtn").disabled = false;
+    msg.className = "msg ok"; msg.textContent = "Permit signed for @" + j.handle + " — now press ③ to claim.";
+  } catch (e) { msg.className = "msg err"; msg.textContent = e.message || String(e); }
+};
+function encClaimX(handle, deadline, sigHex) {
+  const hb = new TextEncoder().encode(handle);
+  const hHex = [...hb].map(b => b.toString(16).padStart(2, "0")).join("");
+  const hPad = hHex.padEnd(Math.max(64, Math.ceil(hHex.length / 64) * 64), "0");
+  const sig = sigHex.replace(/^0x/, "");
+  const bytesOff = 96 + 32 + hPad.length / 2;
+  return SEL.claimXFree + padUint(96) + padUint(deadline) + padUint(bytesOff)
+    + padUint(hb.length) + hPad + padUint(sig.length / 2) + sig.padEnd(192, "0");
+}
+$("claimXBtn").onclick = async () => {
+  const msg = $("msgX");
+  try {
+    if (!xPermit) throw new Error("Get a permit first (step ②).");
+    msg.className = "msg"; msg.textContent = "Claiming on-chain…";
+    const h = await sendTx(encClaimX(xPermit.handle, xPermit.deadline, xPermit.signature));
+    xPermit = null; $("claimXBtn").disabled = true;
+    afterTx(msg, h);
+  } catch (e) { msg.className = "msg err"; msg.textContent = e.message || String(e); }
+};
+
+function updateBuyTotal() { $("buyTotal").textContent = fmtBNB(priceWei * BigInt($("buyCount").value)); }
+$("buyCount").onchange = updateBuyTotal;
+$("buyBtn").onclick = async () => {
+  const msg = $("msgBuy");
+  try {
+    if (!account) throw new Error("Connect your wallet first.");
+    const count = BigInt($("buyCount").value);
+    const value = "0x" + (priceWei * count).toString(16);
+    msg.className = "msg"; msg.textContent = "Buying " + count.toString() + " coin(s) for " + fmtBNB(priceWei * count) + "…";
+    const h = await sendTx(SEL.mint + padUint(count) + padAddr(refFromUrl()), value);
+    afterTx(msg, h);
+  } catch (e) { msg.className = "msg err"; msg.textContent = e.message || String(e); }
+};
+
+$("claimBonusBtn").onclick = async () => {
+  const msg = $("msgRef");
+  try {
+    if (!account) throw new Error("Connect your wallet first.");
+    msg.className = "msg"; msg.textContent = "Striking your bonus coin(s)…";
+    const h = await sendTx(SEL.claimReferralBonus);
+    afterTx(msg, h);
+  } catch (e) { msg.className = "msg err"; msg.textContent = e.message || String(e); }
+};
+$("copyRef").onclick = async () => {
+  if (!account) { $("msgRef").className = "msg err"; $("msgRef").textContent = "Connect your wallet first."; return; }
+  await navigator.clipboard.writeText(myRef()).catch(() => {});
+  $("msgRef").className = "msg ok"; $("msgRef").textContent = "Marked link copied.";
+};
+$("copyPrompt").onclick = async () => {
+  await navigator.clipboard.writeText($("agentPrompt").textContent).catch(() => {});
+  $("msgPrompt").textContent = "Copied.";
+};
+
+updateLinks(); updateBuyTotal(); refresh();
+setInterval(refresh, 30000);
+</script>
+</body>
+</html>
